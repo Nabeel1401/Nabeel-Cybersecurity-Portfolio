@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState} from 'react';
 import { Menu, X } from 'lucide-react';
 
 const email = 'nabeelahmad1401@gmail.com';
@@ -177,150 +177,6 @@ function Logo() {
     >
       <path d="M 256 64 L 256 128 L 192.5 128 L 160 95 L 128 64 L 96 95 L 63.5 128 L 64 128 L 128 192 L 128 256 L 64.5 256 L 32 223 L 0 192 L 0 64 L 64 0 L 192 0 Z M 256 192 L 256 256 L 192.5 256 L 160 223 L 128 192 L 128 128 L 192 128 Z" />
     </svg>
-  );
-}
-
-function Stats() {
-  const polar = (radius: number, angle: number) => ({
-    x: -110 + radius * Math.cos((angle * Math.PI) / 180),
-    y: 300 + radius * Math.sin((angle * Math.PI) / 180),
-  });
-
-  const items = [
-    {
-      radius: 330,
-      start: -92,
-      end: 16,
-      dot: -46,
-      value: String(certificates.length).padStart(2, '0'),
-      label: 'CERTIFICATES',
-    },
-    {
-      radius: 395,
-      start: -56,
-      end: 60,
-      dot: 2,
-      value: '02',
-      label: 'INTERNSHIPS',
-    },
-    {
-      radius: 460,
-      start: -14,
-      end: 72,
-      dot: 44,
-      value: '2027',
-      label: 'MASTER’S TARGET',
-    },
-  ];
-
-  return (
-    <div className="absolute inset-y-0 right-0 z-30 hidden pointer-events-none sm:block">
-      <svg
-        viewBox="0 0 380 700"
-        preserveAspectRatio="xMaxYMid meet"
-        className="h-full w-auto"
-        aria-hidden="true"
-      >
-        {items.map((item, index) => {
-          const start = polar(item.radius, item.start);
-          const end = polar(item.radius, item.end);
-          const dot = polar(item.radius, item.dot);
-          const delay = 0.4 + index * 0.22;
-          const markDelay = delay + 0.9;
-          const length =
-            (item.radius * (item.end - item.start) * Math.PI) / 180;
-
-          return (
-            <g key={item.label}>
-              <defs>
-                <linearGradient
-                  id={`arc-gradient-${index}`}
-                  gradientUnits="userSpaceOnUse"
-                  x1={start.x}
-                  y1={start.y}
-                  x2={end.x}
-                  y2={end.y}
-                >
-                  {[
-                    [0, 0],
-                    [22, 0.5],
-                    [55, 0.5],
-                    [85, 0.1],
-                    [100, 0],
-                  ].map(([offset, opacity]) => (
-                    <stop
-                      key={offset}
-                      offset={`${offset}%`}
-                      stopColor="#e8c47c"
-                      stopOpacity={opacity}
-                    />
-                  ))}
-                </linearGradient>
-              </defs>
-
-              <path
-                d={`M ${start.x} ${start.y} A ${item.radius} ${item.radius} 0 0 1 ${end.x} ${end.y}`}
-                fill="none"
-                stroke={`url(#arc-gradient-${index})`}
-                strokeWidth="1.1"
-                className="arc-line"
-                style={
-                  {
-                    '--len': length,
-                    animationDelay: `${delay}s`,
-                  } as CSSProperties
-                }
-              />
-
-              <circle
-                cx={dot.x}
-                cy={dot.y}
-                r="3.4"
-                fill="#e8c47c"
-                className="arc-dot"
-                style={{ animationDelay: `${markDelay}s` }}
-              />
-
-              <circle
-                cx={dot.x}
-                cy={dot.y}
-                r="7"
-                fill="none"
-                stroke="#e8c47c"
-                strokeOpacity=".35"
-                className="arc-ring"
-                style={{ animationDelay: `${markDelay + 0.3}s` }}
-              />
-
-              <text
-                x={dot.x + 16}
-                y={dot.y + 4}
-                fill="#ffffff"
-                fontSize="32"
-                letterSpacing="-1"
-                className="arc-text"
-                style={{ animationDelay: `${markDelay + 0.15}s` }}
-              >
-                {item.value}
-              </text>
-
-              <text
-                x={dot.x + 18}
-                y={dot.y + 22}
-                fill="#e8c47c"
-                fontSize="8.5"
-                fontWeight="600"
-                letterSpacing="2"
-                className="arc-text"
-                style={{ animationDelay: `${markDelay + 0.3}s` }}
-              >
-                {item.label}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
   );
 }
 
@@ -539,7 +395,55 @@ export default function App() {
 
         <div className="hero-shade absolute inset-0 z-20" />
 
-        <Stats />
+        <aside
+  aria-label="Portfolio sections"
+  className="absolute right-4 top-1/2 z-40 -translate-y-1/2 rounded-2xl border border-[#e8c47c]/30 bg-black/75 p-3 backdrop-blur-md sm:right-8 sm:p-5"
+>
+  <nav className="flex flex-col gap-1">
+    {[
+      ['About Me', 'about'],
+      ['My Toolkit', 'skills'],
+      ['Projects', 'projects'],
+      ['Experience', 'experience'],
+      ['Education', 'education'],
+      ['Certifications', 'certifications'],
+      ['Connect', 'contact'],
+    ].map(([label, id], index) => (
+      <a
+        key={id}
+        href={`#${id}`}
+        onClick={(event) => {
+          event.preventDefault();
+
+          const section = document.getElementById(id);
+          if (!section) return;
+
+          const reducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+          ).matches;
+
+          window.scrollTo({
+            top: Math.max(
+              0,
+              section.getBoundingClientRect().top +
+                window.scrollY -
+                96,
+            ),
+            behavior: reducedMotion ? 'auto' : 'smooth',
+          });
+
+          window.history.replaceState(null, '', `#${id}`);
+        }}
+        className="flex items-center gap-3 rounded-lg px-3 py-3 text-xs text-white transition-colors hover:bg-white/10 hover:text-[#e8c47c] sm:text-sm"
+      >
+        <span className="text-[10px] text-[#e8c47c]">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <span>{label}</span>
+      </a>
+    ))}
+  </nav>
+</aside>
 
         <div className="absolute bottom-12 left-5 z-40 max-w-[300px] sm:bottom-16 sm:left-8 sm:max-w-md md:bottom-24 md:left-12">
           <p
