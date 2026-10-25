@@ -1,15 +1,37 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Menu, X } from 'lucide-react';
 
+const email = 'nabeelahmad1401@gmail.com';
 const github = 'https://github.com/Nabeel1401';
 const linkedin = 'https://www.linkedin.com/in/nabeelahmad14';
 
 const links = [
-  ['About', '#about'],
-  ['Projects', '#projects'],
-  ['Experience', '#experience'],
-  ['Education', '#education'],
-  ['Certifications', '#certifications'],
+  { label: 'About Me', href: '#about' },
+  { label: 'My Toolkit', href: '#skills' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Education', href: '#education' },
+  { label: 'Certifications', href: '#certifications' },
+  { label: 'Connect', href: '#contact' },
+];
+
+const skills = [
+  {
+    title: 'Cybersecurity fundamentals',
+    text: 'Network security · Information security · Web security · Vulnerability assessment',
+  },
+  {
+    title: 'Security tools & practice',
+    text: 'Linux · Kali Linux · Nmap · Metasploit · Root-Me · TryHackMe',
+  },
+  {
+    title: 'Cloud & DevSecOps',
+    text: 'Cloud computing · Docker · Docker Compose · Git · CI/CD · Trivy',
+  },
+  {
+    title: 'Governance & risk',
+    text: 'ISO/IEC 27001 fundamentals · ISO/IEC 27005 fundamentals · Security risk assessment',
+  },
 ];
 
 const certificates = [
@@ -74,6 +96,76 @@ const certificates = [
   },
 ];
 
+const projects = [
+  {
+    title: 'Property rental platform',
+    type: 'FULL-STACK / PTU INTERNSHIP',
+    description:
+      'A MERN application for property discovery, recommendations and dealer enquiries.',
+    highlights: [
+      'Location, amenities and preference-based filters',
+      'Property ratings and enquiry handling',
+      'REST APIs, database schemas and image uploads',
+    ],
+    stack: ['React', 'Node.js', 'MongoDB'],
+    visual: 'discover → filter → connect',
+  },
+  {
+    title: 'Ethereum decentralized app',
+    type: 'WEB3 / REDBLOX INTERNSHIP',
+    description:
+      'A responsive application connecting Ethereum smart contracts and wallet interactions.',
+    highlights: [
+      'RainbowKit wallet connectivity and authentication',
+      'Ethereum transactions and smart contract integration',
+      'Responsive frontend with Next.js and Tailwind CSS',
+    ],
+    stack: ['Next.js', 'Ethereum', 'RainbowKit'],
+    visual: 'wallet ↔ contract ↔ ethereum',
+  },
+];
+
+const experience = [
+  {
+    date: 'JAN — APR 2025',
+    title: 'Full-Stack Web Developer Intern',
+    organization: 'Puducherry Technological University',
+    description:
+      'Developed a MERN rental platform with property filters, recommendations, ratings and dealer enquiries. Built REST APIs, database schemas and image upload features.',
+  },
+  {
+    date: 'MAY — JUL 2024',
+    title: 'Full-Stack & Blockchain Developer Intern',
+    organization: 'REDBLOX Technologies Pvt. Ltd.',
+    description:
+      'Developed an Ethereum dApp, built its Next.js and Tailwind CSS frontend, integrated RainbowKit wallet connectivity, and implemented blockchain transaction handling.',
+  },
+];
+
+const education = [
+  {
+    date: '2025 — 2027',
+    title: 'Master’s in Cybersecurity & Cloud Computing',
+    institution:
+      'ESILV — École Supérieure d’Ingénieurs Léonard de Vinci',
+  },
+  {
+    date: '2021 — 2025',
+    title: 'BTech in Information Technology',
+    institution: 'Puducherry Technological University',
+  },
+  {
+    date: '2019 — 2021',
+    title: 'Higher Secondary Certificate — PCMC',
+    institution: 'Petit Seminaire Higher Secondary School',
+  },
+  {
+    date: '2018 — 2019',
+    title: 'Secondary School Leaving Certificate',
+    institution: 'Petit Seminaire Higher Secondary School',
+  },
+];
+
 function Logo() {
   return (
     <svg
@@ -89,67 +181,65 @@ function Logo() {
 }
 
 function Stats() {
-  const polar = (r: number, a: number) => ({
-    x: -110 + r * Math.cos((a * Math.PI) / 180),
-    y: 300 + r * Math.sin((a * Math.PI) / 180),
+  const polar = (radius: number, angle: number) => ({
+    x: -110 + radius * Math.cos((angle * Math.PI) / 180),
+    y: 300 + radius * Math.sin((angle * Math.PI) / 180),
   });
 
-  const stats = [
+  const items = [
     {
-      r: 330,
+      radius: 330,
       start: -92,
       end: 16,
       dot: -46,
-      value: '06',
-      suffix: '',
+      value: String(certificates.length).padStart(2, '0'),
       label: 'CERTIFICATES',
     },
     {
-      r: 395,
+      radius: 395,
       start: -56,
       end: 60,
       dot: 2,
       value: '02',
-      suffix: '',
       label: 'INTERNSHIPS',
     },
     {
-      r: 460,
+      radius: 460,
       start: -14,
       end: 72,
       dot: 44,
       value: '2027',
-      suffix: '',
       label: 'MASTER’S TARGET',
     },
   ];
 
   return (
-    <div className="absolute inset-y-0 right-0 z-40 pointer-events-none hidden sm:block">
+    <div className="absolute inset-y-0 right-0 z-30 hidden pointer-events-none sm:block">
       <svg
         viewBox="0 0 380 700"
         preserveAspectRatio="xMaxYMid meet"
         className="h-full w-auto"
         aria-hidden="true"
       >
-        {stats.map((s, i) => {
-          const a = polar(s.r, s.start);
-          const b = polar(s.r, s.end);
-          const d = polar(s.r, s.dot);
-          const delay = 0.4 + i * 0.22;
-          const mark = delay + 0.9;
-          const len = (s.r * (s.end - s.start) * Math.PI) / 180;
+        {items.map((item, index) => {
+          const start = polar(item.radius, item.start);
+          const end = polar(item.radius, item.end);
+          const dot = polar(item.radius, item.dot);
+          const delay = 0.4 + index * 0.22;
+          const markDelay = delay + 0.9;
+          const length =
+            (item.radius * (item.end - item.start) * Math.PI) / 180;
 
           return (
-            <g key={s.label}>
+            <g key={item.label}>
               <defs>
                 <linearGradient
-                  id={`arc-${i}`}
+                  id={`arc-gradient-${index}`}
                   gradientUnits="userSpaceOnUse"
-                  x1={a.x}
-                  y1={a.y}
-                  x2={b.x}
-                  y2={b.y}
+                  x1={start.x}
+                  y1={start.y}
+                  x2={end.x}
+                  y2={end.y}
                 >
                   {[
                     [0, 0],
@@ -169,65 +259,62 @@ function Stats() {
               </defs>
 
               <path
-                d={`M ${a.x} ${a.y} A ${s.r} ${s.r} 0 0 1 ${b.x} ${b.y}`}
+                d={`M ${start.x} ${start.y} A ${item.radius} ${item.radius} 0 0 1 ${end.x} ${end.y}`}
                 fill="none"
-                stroke={`url(#arc-${i})`}
+                stroke={`url(#arc-gradient-${index})`}
                 strokeWidth="1.1"
                 className="arc-line"
                 style={
                   {
-                    '--len': len,
+                    '--len': length,
                     animationDelay: `${delay}s`,
                   } as CSSProperties
                 }
               />
 
               <circle
-                cx={d.x}
-                cy={d.y}
+                cx={dot.x}
+                cy={dot.y}
                 r="3.4"
                 fill="#e8c47c"
                 className="arc-dot"
-                style={{ animationDelay: `${mark}s` }}
+                style={{ animationDelay: `${markDelay}s` }}
               />
 
               <circle
-                cx={d.x}
-                cy={d.y}
+                cx={dot.x}
+                cy={dot.y}
                 r="7"
                 fill="none"
                 stroke="#e8c47c"
                 strokeOpacity=".35"
                 className="arc-ring"
-                style={{ animationDelay: `${mark + 0.3}s` }}
+                style={{ animationDelay: `${markDelay + 0.3}s` }}
               />
 
               <text
-                x={d.x + 16}
-                y={d.y + 4}
-                fill="#fff"
+                x={dot.x + 16}
+                y={dot.y + 4}
+                fill="#ffffff"
                 fontSize="32"
                 letterSpacing="-1"
                 className="arc-text"
-                style={{ animationDelay: `${mark + 0.15}s` }}
+                style={{ animationDelay: `${markDelay + 0.15}s` }}
               >
-                {s.value}
-                <tspan fontSize="19" dy="-10">
-                  {s.suffix}
-                </tspan>
+                {item.value}
               </text>
 
               <text
-                x={d.x + 18}
-                y={d.y + 22}
+                x={dot.x + 18}
+                y={dot.y + 22}
                 fill="#e8c47c"
                 fontSize="8.5"
                 fontWeight="600"
                 letterSpacing="2"
                 className="arc-text"
-                style={{ animationDelay: `${mark + 0.3}s` }}
+                style={{ animationDelay: `${markDelay + 0.3}s` }}
               >
-                {s.label}
+                {item.label}
               </text>
             </g>
           );
@@ -238,17 +325,80 @@ function Stats() {
 }
 
 export default function App() {
-  const [menu, setMenu] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('All');
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
-    const close = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMenu(false);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
     };
 
-    window.addEventListener('keydown', close);
-    return () => window.removeEventListener('keydown', close);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
+
+  useEffect(() => {
+    let scheduled = false;
+
+    const updateActiveSection = () => {
+      const marker = window.innerHeight * 0.3;
+      let current = 'home';
+
+      document
+        .querySelectorAll<HTMLElement>('section[id]')
+        .forEach((section) => {
+          if (section.getBoundingClientRect().top <= marker) {
+            current = section.id;
+          }
+        });
+
+      setActiveSection(current);
+      scheduled = false;
+    };
+
+    const handleScroll = () => {
+      if (!scheduled) {
+        scheduled = true;
+        window.requestAnimationFrame(updateActiveSection);
+      }
+    };
+
+    updateActiveSection();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
+
+  const goToSection = (href: string) => {
+    setMenuOpen(false);
+
+    const section = document.getElementById(href.replace('#', ''));
+
+    if (!section) return;
+
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    const top =
+      section.getBoundingClientRect().top + window.scrollY - 96;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: reduceMotion ? 'auto' : 'smooth',
+    });
+
+    window.history.replaceState(null, '', href);
+    setActiveSection(section.id);
+  };
 
   return (
     <div
@@ -260,95 +410,111 @@ export default function App() {
       </a>
 
       <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between md:justify-center p-4 sm:p-5"
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between lg:justify-center p-4 sm:p-5"
         aria-label="Main navigation"
       >
-        <div className="nav-drop hidden md:flex bg-black/60 backdrop-blur-md rounded-full pl-3 pr-2 py-2 items-center gap-1">
+        <div className="nav-drop hidden lg:flex items-center gap-1 rounded-full bg-black/80 backdrop-blur-md pl-3 pr-2 py-2">
           <a
             href="#home"
-            className="text-gold p-2"
+            className="p-2 text-gold"
             aria-label="Nabeel Ahmad home"
+            onClick={(event) => {
+              event.preventDefault();
+              goToSection('#home');
+            }}
           >
             <Logo />
           </a>
 
-          {links.map(([text, url], i) => (
-            <a
-              key={text}
-              href={url}
-              className={`text-sm font-medium px-3 py-1.5 rounded-full hover:bg-white/10 hover:text-white ${
-                i === 0 ? 'text-white' : 'text-gray-300'
-              }`}
-            >
-              {text}
-            </a>
-          ))}
+          {links.map((link) => {
+            const isConnect = link.href === '#contact';
+            const isActive =
+              activeSection === link.href.substring(1);
 
-          <a
-            href="#contact"
-            className="bg-gold text-gray-900 text-sm font-semibold px-5 py-1.5 rounded-full hover:bg-yellow-100 ml-1"
-          >
-            Connect
-          </a>
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                aria-current={isActive ? 'location' : undefined}
+                onClick={(event) => {
+                  event.preventDefault();
+                  goToSection(link.href);
+                }}
+                className={
+                  isConnect
+                    ? 'ml-1 whitespace-nowrap rounded-full bg-gold px-5 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-yellow-100'
+                    : `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                        isActive
+                          ? 'bg-white/10 text-white'
+                          : 'text-gray-300'
+                      }`
+                }
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </div>
 
         <a
-          className="nav-drop md:hidden bg-black/60 backdrop-blur-md rounded-full p-3 text-gold"
           href="#home"
-          aria-label="Home"
-          onClick={() => setMenu(false)}
+          className="nav-drop rounded-full bg-black/80 p-3 text-gold backdrop-blur-md lg:hidden"
+          aria-label="Nabeel Ahmad home"
+          onClick={(event) => {
+            event.preventDefault();
+            goToSection('#home');
+          }}
         >
           <Logo />
         </a>
 
         <button
-          className="nav-drop md:hidden bg-black/60 backdrop-blur-md rounded-full p-3 text-white"
-          aria-label={menu ? 'Close menu' : 'Open menu'}
-          aria-expanded={menu}
-          aria-controls="mobile-menu"
-          onClick={() => setMenu(!menu)}
+          type="button"
+          className="nav-drop rounded-full bg-black/80 p-3 text-white backdrop-blur-md lg:hidden"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          onClick={() => setMenuOpen((open) => !open)}
         >
-          {menu ? <X size={22} /> : <Menu size={22} />}
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </nav>
 
-      {menu && (
-        <div
-          id="mobile-menu"
-          className="fixed top-0 left-0 right-0 z-40 bg-white pt-16 pb-6 px-5 shadow-lg md:hidden"
-        >
-          {links.map(([text, url]) => (
-            <a
-              key={text}
-              href={url}
-              className="block text-gray-800 py-3 border-b border-gray-100"
-              onClick={() => setMenu(false)}
-            >
-              {text}
-            </a>
-          ))}
-
+      <div
+        id="mobile-navigation"
+        hidden={!menuOpen}
+        className="fixed inset-x-0 top-0 z-40 max-h-[100dvh] overflow-y-auto bg-[#19080c] px-5 pb-6 pt-20 shadow-lg lg:hidden"
+      >
+        {links.map((link) => (
           <a
-            href="#contact"
-            onClick={() => setMenu(false)}
-            className="block mt-4 text-center bg-black text-gold py-3 rounded-full"
+            key={link.href}
+            href={link.href}
+            onClick={(event) => {
+              event.preventDefault();
+              goToSection(link.href);
+            }}
+            className={
+              link.href === '#contact'
+                ? 'mt-5 block rounded-full bg-gold px-5 py-3 text-center font-semibold text-gray-900'
+                : 'block border-b border-white/10 py-4 text-sm text-white hover:text-gold'
+            }
           >
-            Connect
+            {link.label}
           </a>
-        </div>
-      )}
+        ))}
+      </div>
 
       <section
         id="home"
-        className="relative overflow-hidden h-[100dvh] min-h-[680px] bg-[#26080c] text-white"
+        className="relative h-[100dvh] min-h-[680px] overflow-hidden bg-[#26080c] text-white"
       >
         <svg
-          className="absolute inset-0 w-full h-full z-0 opacity-10"
+          className="absolute inset-0 z-0 h-full w-full opacity-10"
           aria-hidden="true"
         >
           <defs>
             <pattern
-              id="grid"
+              id="hero-grid"
               width="48"
               height="48"
               patternUnits="userSpaceOnUse"
@@ -362,7 +528,7 @@ export default function App() {
             </pattern>
           </defs>
 
-          <rect width="100%" height="100%" fill="url(#grid)" />
+          <rect width="100%" height="100%" fill="url(#hero-grid)" />
         </svg>
 
         <img
@@ -371,23 +537,23 @@ export default function App() {
           className="absolute inset-0 z-10 h-full w-full object-contain object-[center_35%]"
         />
 
-        <div className="absolute inset-0 z-20 hero-shade" />
+        <div className="hero-shade absolute inset-0 z-20" />
 
         <Stats />
 
-        <div className="absolute bottom-12 sm:bottom-16 md:bottom-24 left-5 sm:left-8 md:left-12 max-w-[300px] sm:max-w-md z-40">
+        <div className="absolute bottom-12 left-5 z-40 max-w-[300px] sm:bottom-16 sm:left-8 sm:max-w-md md:bottom-24 md:left-12">
           <p
-            className="hero-rise text-[11px] sm:text-xs font-semibold tracking-[0.12em] text-gold"
+            className="hero-rise text-[11px] font-semibold tracking-[0.12em] text-gold sm:text-xs"
             style={{ animationDelay: '.15s' }}
           >
             NABEEL AHMAD / <i>secure by design</i>
           </p>
 
           <h1
-            className="hero-rise mt-5 text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-[-0.08em] text-white"
+            className="hero-rise mt-5 text-4xl leading-[1.05] tracking-[-0.08em] text-white sm:text-5xl md:text-6xl"
             style={{ animationDelay: '.3s' }}
           >
-            Building.
+            Investigating.
             <br />
             Defending.
             <br />
@@ -395,27 +561,32 @@ export default function App() {
           </h1>
 
           <p
-            className="hero-rise mt-6 text-sm sm:text-base text-white/90 leading-relaxed"
+            className="hero-rise mt-6 text-sm leading-relaxed text-white/90 sm:text-base"
             style={{ animationDelay: '.5s' }}
           >
-            Cybersecurity & Cloud Computing student at ESILV. Exploring
-            penetration testing, secure applications and the systems behind them.
+            Cybersecurity & Cloud Computing student at ESILV.
+            Exploring penetration testing, network security and threat
+            analysis.
           </p>
 
           <a
             href="#projects"
-            className="hero-rise group relative inline-flex overflow-hidden mt-7 bg-gold text-[#26080c] font-semibold text-sm px-7 sm:px-8 py-3 sm:py-3.5 rounded-full shadow-lg shadow-black/20 transition-transform hover:scale-[1.04] active:scale-95"
+            onClick={(event) => {
+              event.preventDefault();
+              goToSection('#projects');
+            }}
+            className="hero-rise group relative mt-7 inline-flex overflow-hidden rounded-full bg-gold px-7 py-3 text-sm font-semibold text-[#26080c] shadow-lg shadow-black/20 transition-transform hover:scale-[1.04] active:scale-95 sm:px-8 sm:py-3.5"
             style={{ animationDelay: '.7s' }}
           >
             Explore my work ↗
             <span
               aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+              className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/60 to-transparent transition-transform duration-700 group-hover:translate-x-full"
             />
           </a>
         </div>
 
-        <div className="absolute bottom-5 right-6 text-[9px] text-gold/80 tracking-[.15em] z-40">
+        <div className="absolute bottom-5 right-6 z-40 text-[9px] tracking-[.15em] text-gold/80">
           ÎLE-DE-FRANCE / FRANCE
         </div>
       </section>
@@ -433,26 +604,29 @@ export default function App() {
 
             <div>
               <p className="lead">
-                I build applications and learn how to defend them.
+                I investigate security risks and learn how to defend
+                systems.
               </p>
 
               <p>
-                I’m studying Cybersecurity & Cloud Computing at ESILV, building
-                on my information technology background and full-stack
-                development experience. My internships took me from a MERN
-                rental platform to Ethereum applications.
+                I’m studying Cybersecurity & Cloud Computing at ESILV,
+                building on my information technology background.
+                I’m focused on understanding vulnerabilities,
+                assessing security risks and protecting networks and
+                cloud environments.
               </p>
 
               <p>
-                Today, I’m strengthening practical security skills through
-                Root-Me and TryHackMe. My interests include penetration testing,
-                web security and DevSecOps.
+                I’m strengthening my practical security skills through
+                Root-Me and TryHackMe. My interests include SOC
+                analysis, penetration testing, web security and
+                DevSecOps.
               </p>
 
               <div className="tags">
+                <span>SOC analysis</span>
                 <span>Penetration testing</span>
-                <span>Cloud computing</span>
-                <span>DevSecOps</span>
+                <span>Cloud security</span>
               </div>
             </div>
           </div>
@@ -462,33 +636,16 @@ export default function App() {
           <p className="kicker">02 / MY TOOLKIT</p>
 
           <h2>
-            Tools to build.
+            Tools to investigate.
             <br />
             <span>Skills to defend.</span>
           </h2>
 
           <div className="skill-grid">
-            {[
-              [
-                'Security',
-                'Network security · Information security · Linux · Root-Me · TryHackMe',
-              ],
-              [
-                'Development',
-                'JavaScript · React · Next.js · Node.js · Express · REST APIs · MongoDB',
-              ],
-              [
-                'Cloud & delivery',
-                'Cloud computing studies · Docker · Git · CI/CD · Secure development',
-              ],
-              [
-                'Web3 & collaboration',
-                'Ethereum · Smart contracts · RainbowKit · Tailwind CSS · Scrum',
-              ],
-            ].map(([title, text]) => (
-              <article key={title}>
-                <h3>{title}</h3>
-                <p>{text}</p>
+            {skills.map((skill) => (
+              <article key={skill.title}>
+                <h3>{skill.title}</h3>
+                <p>{skill.text}</p>
               </article>
             ))}
           </div>
@@ -504,54 +661,27 @@ export default function App() {
           </h2>
 
           <div className="project-grid">
-            {[
-              {
-                title: 'Property rental platform',
-                type: 'FULL-STACK / PTU INTERNSHIP',
-                desc: 'A MERN application for property discovery, recommendations and dealer enquiries.',
-                points: [
-                  'Location, amenities and preference-based filters',
-                  'Property ratings and enquiry handling',
-                  'REST APIs, database schemas and image uploads',
-                ],
-                stack: ['React', 'Node.js', 'MongoDB'],
-              },
-              {
-                title: 'Ethereum decentralized app',
-                type: 'WEB3 / REDBLOX INTERNSHIP',
-                desc: 'A responsive application connecting Ethereum smart contracts and wallet interactions.',
-                points: [
-                  'RainbowKit wallet connectivity and authentication',
-                  'Ethereum transactions and smart contract integration',
-                  'Responsive frontend with Next.js and Tailwind CSS',
-                ],
-                stack: ['Next.js', 'Ethereum', 'RainbowKit'],
-              },
-            ].map((project, i) => (
+            {projects.map((project, index) => (
               <article className="project-card" key={project.title}>
                 <div className="project-visual" aria-hidden="true">
-                  <span>0{i + 1} /</span>
-                  <code>
-                    {i === 0
-                      ? 'discover → filter → connect'
-                      : 'wallet ↔ contract ↔ ethereum'}
-                  </code>
+                  <span>0{index + 1} /</span>
+                  <code>{project.visual}</code>
                 </div>
 
                 <div className="project-copy">
                   <p className="kicker">{project.type}</p>
                   <h3>{project.title}</h3>
-                  <p>{project.desc}</p>
+                  <p>{project.description}</p>
 
                   <ul>
-                    {project.points.map((point) => (
-                      <li key={point}>{point}</li>
+                    {project.highlights.map((highlight) => (
+                      <li key={highlight}>{highlight}</li>
                     ))}
                   </ul>
 
                   <div className="tags">
-                    {project.stack.map((tag) => (
-                      <span key={tag}>{tag}</span>
+                    {project.stack.map((technology) => (
+                      <span key={technology}>{technology}</span>
                     ))}
                   </div>
 
@@ -569,8 +699,9 @@ export default function App() {
           </div>
 
           <p className="small-note">
-            Project descriptions are based on my internship experience.
-            Source-code links currently open my GitHub profile.
+            Project descriptions are based on my internship
+            experience. Source-code links currently open my GitHub
+            profile.
           </p>
         </section>
 
@@ -581,30 +712,17 @@ export default function App() {
             Learning by <span>doing.</span>
           </h2>
 
-          {[
-            [
-              'JAN — APR 2025',
-              'Full-Stack Web Developer Intern',
-              'Puducherry Technological University',
-              'Developed a MERN rental platform with property filters, recommendations, ratings and dealer enquiries. Built REST APIs, database schemas and image upload features.',
-            ],
-            [
-              'MAY — JUL 2024',
-              'Full-Stack & Blockchain Developer Intern',
-              'REDBLOX Technologies Pvt. Ltd.',
-              'Developed an Ethereum dApp, built its Next.js and Tailwind CSS frontend, integrated RainbowKit wallet connectivity, and implemented blockchain transaction handling.',
-            ],
-          ].map(([date, title, org, text]) => (
-            <article className="timeline" key={org}>
-              <div className="kicker">
-                {date}
+          {experience.map((role) => (
+            <article className="timeline" key={role.organization}>
+              <div>
+                <span className="kicker">{role.date}</span>
                 <p>Puducherry, India</p>
               </div>
 
               <div>
-                <h3>{title}</h3>
-                <h4>{org}</h4>
-                <p>{text}</p>
+                <h3>{role.title}</h3>
+                <h4>{role.organization}</h4>
+                <p>{role.description}</p>
               </div>
             </article>
           ))}
@@ -620,32 +738,11 @@ export default function App() {
           </h2>
 
           <div className="education-grid">
-            {[
-              [
-                '2025 — 2027',
-                'Master’s in Cybersecurity & Cloud Computing',
-                'ESILV — École Supérieure d’Ingénieurs Léonard de Vinci',
-              ],
-              [
-                '2021 — 2025',
-                'BTech in Information Technology',
-                'Puducherry Technological University',
-              ],
-              [
-                '2019 — 2021',
-                'Higher Secondary Certificate — PCMC',
-                'Petit Seminaire Higher Secondary School',
-              ],
-              [
-                '2018 — 2019',
-                'Secondary School Leaving Certificate',
-                'Petit Seminaire Higher Secondary School',
-              ],
-            ].map(([date, title, org]) => (
-              <article key={title}>
-                <span className="kicker">{date}</span>
-                <h3>{title}</h3>
-                <p>{org}</p>
+            {education.map((item) => (
+              <article key={item.title}>
+                <span className="kicker">{item.date}</span>
+                <h3>{item.title}</h3>
+                <p>{item.institution}</p>
               </article>
             ))}
           </div>
@@ -664,12 +761,15 @@ export default function App() {
             {['All', 'Security', 'Data', 'Agile'].map((category) => (
               <button
                 key={category}
+                type="button"
                 aria-pressed={filter === category}
                 className={filter === category ? 'selected' : ''}
                 onClick={() => setFilter(category)}
               >
                 {category}
-                {category === 'All' ? ' / 06' : ''}
+                {category === 'All'
+                  ? ` / ${String(certificates.length).padStart(2, '0')}`
+                  : ''}
               </button>
             ))}
           </div>
@@ -677,29 +777,35 @@ export default function App() {
           <div>
             {certificates
               .filter(
-                (cert) => filter === 'All' || cert.category === filter,
+                (certificate) =>
+                  filter === 'All' ||
+                  certificate.category === filter,
               )
-              .map((cert) => (
-                <article className="certificate" key={cert.file}>
+              .map((certificate) => (
+                <article
+                  className="certificate"
+                  key={certificate.file}
+                >
                   <div>
                     <span className="kicker">
-                      {cert.issuer} / {cert.date}
+                      {certificate.issuer} / {certificate.date}
                     </span>
-                    <h3>{cert.title}</h3>
+
+                    <h3>{certificate.title}</h3>
                   </div>
 
                   <div className="certificate-actions">
                     <a
-                      href={`https://chatgpt.com/api/library/files/${cert.id}/download`}
+                      href={`https://chatgpt.com/api/library/files/${certificate.id}/download`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       View PDF ↗
                     </a>
 
-                    {cert.verify && (
+                    {certificate.verify && (
                       <a
-                        href={cert.verify}
+                        href={certificate.verify}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -712,8 +818,9 @@ export default function App() {
           </div>
 
           <p className="small-note">
-            Original PDF links require the owner’s ChatGPT account. Public
-            verification links are available where provided by the issuer.
+            Original PDF links require the owner’s ChatGPT account.
+            Public verification links are available where provided
+            by the issuer.
           </p>
         </section>
 
@@ -721,37 +828,54 @@ export default function App() {
           <p className="kicker">07 / CONNECT</p>
 
           <h2>
-            Let’s build
+            Let’s connect
             <br />
-            <span>what’s next.</span>
+            <span>on cybersecurity.</span>
           </h2>
 
           <p>
-            Interested in cybersecurity, cloud computing and secure development
-            opportunities.
+            Interested in cybersecurity, SOC analysis, penetration
+            testing and cloud security opportunities.
           </p>
 
-          <a className="email-link" href="mailto:fathikaan786@gmail.com">
-            fathikaan786@gmail.com ↗
+          <a className="email-link" href={`mailto:${email}`}>
+            {email} ↗
           </a>
 
           <div className="social-links">
-            <a href={linkedin} target="_blank" rel="noopener noreferrer">
+            <a
+              href={linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               LinkedIn ↗
             </a>
 
-            <a href={github} target="_blank" rel="noopener noreferrer">
+            <a
+              href={github}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               GitHub ↗
             </a>
 
-            <a href="mailto:fathikaan786@gmail.com">Email ↗</a>
+            <a href={`mailto:${email}`}>Email ↗</a>
           </div>
         </section>
       </main>
 
       <footer>
         © 2026 Nabeel Ahmad Kamaludeen
-        <a href="#home">Back to top ↑</a>
+
+        <a
+          href="#home"
+          onClick={(event) => {
+            event.preventDefault();
+            goToSection('#home');
+          }}
+        >
+          Back to top ↑
+        </a>
       </footer>
     </div>
   );
