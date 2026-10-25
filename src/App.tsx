@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const email = 'nabeelahmad1401@gmail.com';
@@ -98,40 +98,62 @@ const certificates = [
 
 const projects = [
   {
-    title: 'Property rental platform',
-    type: 'FULL-STACK / PTU INTERNSHIP',
+    title: 'Ethereum Web3 Application',
+    type: 'REDBLOX / MAY — JULY 2024',
     description:
-      'A MERN application for property discovery, recommendations and dealer enquiries.',
+      'Contributed to a decentralized application connecting a responsive interface with Ethereum smart contracts.',
     highlights: [
-      'Location, amenities and preference-based filters',
-      'Property ratings and enquiry handling',
-      'REST APIs, database schemas and image uploads',
+      'Integrated Web3 wallet authentication using RainbowKit.',
+      'Implemented Ethereum transactions and synchronized blockchain data.',
+      'Developed a responsive interface with Next.js and Tailwind CSS.',
     ],
-    stack: ['React', 'Node.js', 'MongoDB'],
-    visual: 'discover → filter → connect',
+    stack: ['Next.js', 'Tailwind CSS', 'RainbowKit', 'Ethereum'],
+    visual: 'wallet ↔ smart contract ↔ ethereum',
+
+    // Paste the REDBLOX project link here later.
+    url: '',
   },
   {
-    title: 'Ethereum decentralized app',
-    type: 'WEB3 / REDBLOX INTERNSHIP',
+    title: 'Multimodal Fake News Detection',
+    type: 'PTU / AI & DEEP LEARNING / JAN — APR 2025',
     description:
-      'A responsive application connecting Ethereum smart contracts and wallet interactions.',
+      'Developed a multimodal fake news detection system combining text, image and graph-based analysis.',
     highlights: [
-      'RainbowKit wallet connectivity and authentication',
-      'Ethereum transactions and smart contract integration',
-      'Responsive frontend with Next.js and Tailwind CSS',
+      'Collected and processed Twitter text and image data.',
+      'Combined BERT, CLIP and graph neural networks.',
+      'Trained, validated and evaluated models using Python and PyTorch.',
     ],
-    stack: ['Next.js', 'Ethereum', 'RainbowKit'],
-    visual: 'wallet ↔ contract ↔ ethereum',
+    stack: ['Python', 'PyTorch', 'BERT', 'CLIP', 'GNN'],
+    visual: 'text + images + graphs → classification',
+
+    // Paste the AI project link here later.
+    url: '',
+  },
+  {
+    title: 'Rust TCP Port Scanner',
+    type: 'NETWORK SECURITY / JANUARY 2026',
+    description:
+      'Built an asynchronous TCP scanner to identify open ports and exposed services.',
+    highlights: [
+      'Implemented asynchronous scanning with Rust and Tokio.',
+      'Added multiple scanning modes.',
+      'Integrated service detection to identify exposed services.',
+    ],
+    stack: ['Rust', 'Tokio', 'TCP/IP', 'Service Detection'],
+    visual: 'target → TCP scan → exposed services',
+
+    // Paste the Rust project link here later.
+    url: '',
   },
 ];
 
 const experience = [
   {
     date: 'JAN — APR 2025',
-    title: 'Full-Stack Web Developer Intern',
+    title: 'AI & Deep Learning Intern',
     organization: 'Puducherry Technological University',
     description:
-      'Developed a MERN rental platform with property filters, recommendations, ratings and dealer enquiries. Built REST APIs, database schemas and image upload features.',
+      'Developed a multimodal fake news detection system using BERT, CLIP and graph neural networks. Collected and processed Twitter text and image data, built NLP and computer vision pipelines, and trained and evaluated models with Python and PyTorch.',
   },
   {
     date: 'MAY — JUL 2024',
@@ -184,6 +206,78 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeSection, setActiveSection] = useState('home');
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [canGoForward, setCanGoForward] = useState(true);
+
+  const projectTrackRef = useRef<HTMLDivElement>(null);
+
+  const goToSection = (href: string) => {
+    setMenuOpen(false);
+
+    const section = document.getElementById(href.slice(1));
+    if (!section) return;
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    window.scrollTo({
+      top: Math.max(
+        0,
+        section.getBoundingClientRect().top + window.scrollY - 96,
+      ),
+      behavior: reducedMotion ? 'auto' : 'smooth',
+    });
+
+    window.history.replaceState(null, '', href);
+    setActiveSection(section.id);
+  };
+
+  const slideProjects = (direction: -1 | 1) => {
+    const track = projectTrackRef.current;
+    if (!track) return;
+
+    const cards = Array.from(
+      track.querySelectorAll<HTMLElement>('.project-slide'),
+    );
+
+    if (!cards.length) return;
+
+    const trackLeft = track.getBoundingClientRect().left;
+
+    const positions = cards.map(
+      (card) =>
+        card.getBoundingClientRect().left -
+        trackLeft +
+        track.scrollLeft,
+    );
+
+    const current = track.scrollLeft;
+
+    const target =
+      direction === 1
+        ? positions.find((position) => position > current + 2)
+        : [...positions]
+            .reverse()
+            .find((position) => position < current - 2);
+
+    const maxScroll = track.scrollWidth - track.clientWidth;
+
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    track.scrollTo({
+      left: Math.max(
+        0,
+        Math.min(
+          maxScroll,
+          target ?? (direction === 1 ? maxScroll : 0),
+        ),
+      ),
+      behavior: reducedMotion ? 'auto' : 'smooth',
+    });
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -198,7 +292,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let scheduled = false;
+    let frame = 0;
 
     const updateActiveSection = () => {
       const marker = window.innerHeight * 0.3;
@@ -212,14 +306,20 @@ export default function App() {
           }
         });
 
+      if (
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 4
+      ) {
+        current = 'contact';
+      }
+
       setActiveSection(current);
-      scheduled = false;
+      frame = 0;
     };
 
     const handleScroll = () => {
-      if (!scheduled) {
-        scheduled = true;
-        window.requestAnimationFrame(updateActiveSection);
+      if (!frame) {
+        frame = window.requestAnimationFrame(updateActiveSection);
       }
     };
 
@@ -230,31 +330,35 @@ export default function App() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
+      window.cancelAnimationFrame(frame);
     };
   }, []);
 
-  const goToSection = (href: string) => {
-    setMenuOpen(false);
+  useEffect(() => {
+    const track = projectTrackRef.current;
+    if (!track) return;
 
-    const section = document.getElementById(href.replace('#', ''));
+    const updateControls = () => {
+      setCanGoBack(track.scrollLeft > 2);
+      setCanGoForward(
+        track.scrollLeft + track.clientWidth <
+          track.scrollWidth - 2,
+      );
+    };
 
-    if (!section) return;
-
-    const reduceMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-
-    const top =
-      section.getBoundingClientRect().top + window.scrollY - 96;
-
-    window.scrollTo({
-      top: Math.max(0, top),
-      behavior: reduceMotion ? 'auto' : 'smooth',
+    updateControls();
+    track.addEventListener('scroll', updateControls, {
+      passive: true,
     });
 
-    window.history.replaceState(null, '', href);
-    setActiveSection(section.id);
-  };
+    const observer = new ResizeObserver(updateControls);
+    observer.observe(track);
+
+    return () => {
+      track.removeEventListener('scroll', updateControls);
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <div
@@ -283,9 +387,8 @@ export default function App() {
           </a>
 
           {links.map((link) => {
-            const isConnect = link.href === '#contact';
             const isActive =
-              activeSection === link.href.substring(1);
+              activeSection === link.href.slice(1);
 
             return (
               <a
@@ -297,9 +400,9 @@ export default function App() {
                   goToSection(link.href);
                 }}
                 className={
-                  isConnect
-                    ? 'ml-1 whitespace-nowrap rounded-full bg-gold px-5 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-yellow-100'
-                    : `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                  link.href === '#contact'
+                    ? 'ml-1 whitespace-nowrap rounded-full bg-gold px-5 py-2 text-sm font-semibold text-gray-900 hover:bg-yellow-100'
+                    : `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium hover:bg-white/10 hover:text-white ${
                         isActive
                           ? 'bg-white/10 text-white'
                           : 'text-gray-300'
@@ -362,7 +465,7 @@ export default function App() {
 
       <section
         id="home"
-        className="relative h-[100dvh] min-h-[680px] overflow-hidden bg-[#26080c] text-white"
+        className="cyber-hero relative h-[100dvh] min-h-[680px] overflow-hidden bg-[#26080c] text-white"
       >
         <svg
           className="absolute inset-0 z-0 h-full w-full opacity-10"
@@ -383,7 +486,6 @@ export default function App() {
               />
             </pattern>
           </defs>
-
           <rect width="100%" height="100%" fill="url(#hero-grid)" />
         </svg>
 
@@ -396,56 +498,34 @@ export default function App() {
         <div className="hero-shade absolute inset-0 z-20" />
 
         <aside
-  aria-label="Portfolio sections"
-  className="absolute right-4 top-1/2 z-40 -translate-y-1/2 rounded-2xl border border-[#e8c47c]/30 bg-black/75 p-3 backdrop-blur-md sm:right-8 sm:p-5"
->
-  <nav className="flex flex-col gap-1">
-    {[
-      ['About Me', 'about'],
-      ['My Toolkit', 'skills'],
-      ['Projects', 'projects'],
-      ['Experience', 'experience'],
-      ['Education', 'education'],
-      ['Certifications', 'certifications'],
-      ['Connect', 'contact'],
-    ].map(([label, id], index) => (
-      <a
-        key={id}
-        href={`#${id}`}
-        onClick={(event) => {
-          event.preventDefault();
+          className="hero-section-links"
+          aria-label="Portfolio sections"
+        >
+          <nav aria-label="Hero section navigation">
+            {links.map((link, index) => (
+              <a
+                key={link.href}
+                href={link.href}
+                aria-current={
+                  activeSection === link.href.slice(1)
+                    ? 'location'
+                    : undefined
+                }
+                onClick={(event) => {
+                  event.preventDefault();
+                  goToSection(link.href);
+                }}
+              >
+                <span>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span>{link.label}</span>
+              </a>
+            ))}
+          </nav>
+        </aside>
 
-          const section = document.getElementById(id);
-          if (!section) return;
-
-          const reducedMotion = window.matchMedia(
-            '(prefers-reduced-motion: reduce)',
-          ).matches;
-
-          window.scrollTo({
-            top: Math.max(
-              0,
-              section.getBoundingClientRect().top +
-                window.scrollY -
-                96,
-            ),
-            behavior: reducedMotion ? 'auto' : 'smooth',
-          });
-
-          window.history.replaceState(null, '', `#${id}`);
-        }}
-        className="flex items-center gap-3 rounded-lg px-3 py-3 text-xs text-white transition-colors hover:bg-white/10 hover:text-[#e8c47c] sm:text-sm"
-      >
-        <span className="text-[10px] text-[#e8c47c]">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <span>{label}</span>
-      </a>
-    ))}
-  </nav>
-</aside>
-
-        <div className="absolute bottom-12 left-5 z-40 max-w-[300px] sm:bottom-16 sm:left-8 sm:max-w-md md:bottom-24 md:left-12">
+        <div className="hero-introduction absolute bottom-12 left-5 z-40 max-w-[300px] sm:bottom-16 sm:left-8 sm:max-w-md md:bottom-24 md:left-12">
           <p
             className="hero-rise text-[11px] font-semibold tracking-[0.12em] text-gold sm:text-xs"
             style={{ animationDelay: '.15s' }}
@@ -469,8 +549,8 @@ export default function App() {
             style={{ animationDelay: '.5s' }}
           >
             Cybersecurity & Cloud Computing student at ESILV.
-            Exploring penetration testing, network security and threat
-            analysis.
+            Exploring penetration testing, network security and
+            threat analysis.
           </p>
 
           <a
@@ -508,22 +588,22 @@ export default function App() {
 
             <div>
               <p className="lead">
-                I investigate security risks and learn how to defend
-                systems.
+                I investigate security risks and learn how to
+                defend systems.
               </p>
 
               <p>
-                I’m studying Cybersecurity & Cloud Computing at ESILV,
-                building on my information technology background.
-                I’m focused on understanding vulnerabilities,
-                assessing security risks and protecting networks and
-                cloud environments.
+                I’m studying Cybersecurity & Cloud Computing at
+                ESILV, building on my information technology
+                background. I’m focused on understanding
+                vulnerabilities, assessing security risks and
+                protecting networks and cloud environments.
               </p>
 
               <p>
-                I’m strengthening my practical security skills through
-                Root-Me and TryHackMe. My interests include SOC
-                analysis, penetration testing, web security and
+                I’m strengthening my practical security skills
+                through Root-Me and TryHackMe. My interests include
+                SOC analysis, penetration testing, web security and
                 DevSecOps.
               </p>
 
@@ -538,7 +618,6 @@ export default function App() {
 
         <section id="skills">
           <p className="kicker">02 / MY TOOLKIT</p>
-
           <h2>
             Tools to investigate.
             <br />
@@ -558,17 +637,73 @@ export default function App() {
         <section id="projects">
           <p className="kicker">03 / SELECTED PROJECTS</p>
 
-          <h2>
-            Learning through
-            <br />
-            <span>real work.</span>
-          </h2>
+          <div className="projects-heading">
+            <h2>
+              Learning through
+              <br />
+              <span>real work.</span>
+            </h2>
 
-          <div className="project-grid">
+            <div
+              className="project-controls"
+              aria-label="Project carousel controls"
+            >
+              <button
+                type="button"
+                disabled={!canGoBack}
+                onClick={() => slideProjects(-1)}
+                aria-label="Previous project"
+                aria-controls="project-carousel"
+              >
+                ←
+              </button>
+
+              <button
+                type="button"
+                disabled={!canGoForward}
+                onClick={() => slideProjects(1)}
+                aria-label="Next project"
+                aria-controls="project-carousel"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="project-carousel"
+            ref={projectTrackRef}
+            className="project-carousel"
+            role="region"
+            aria-roledescription="carousel"
+            aria-label="Selected projects"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.target !== event.currentTarget) return;
+
+              if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                slideProjects(1);
+              }
+
+              if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                slideProjects(-1);
+              }
+            }}
+          >
             {projects.map((project, index) => (
-              <article className="project-card" key={project.title}>
+              <article
+                className="project-card project-slide"
+                key={project.title}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${index + 1} of ${projects.length}: ${project.title}`}
+              >
                 <div className="project-visual" aria-hidden="true">
-                  <span>0{index + 1} /</span>
+                  <span>
+                    {String(index + 1).padStart(2, '0')} /
+                  </span>
                   <code>{project.visual}</code>
                 </div>
 
@@ -589,29 +724,39 @@ export default function App() {
                     ))}
                   </div>
 
-                  <a
-                    className="inline-link"
-                    href={github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Explore my GitHub ↗
-                  </a>
+                  <div className="project-link-area">
+                    {project.url ? (
+                      <a
+                        className="project-open-button"
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`View ${project.title}`}
+                      >
+                        View project ↗
+                      </a>
+                    ) : (
+                      <button
+                        className="project-open-button"
+                        type="button"
+                        disabled
+                      >
+                        Link coming soon
+                      </button>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
           </div>
 
           <p className="small-note">
-            Project descriptions are based on my internship
-            experience. Source-code links currently open my GitHub
-            profile.
+            Use the arrows to explore projects, or swipe on mobile.
           </p>
         </section>
 
         <section id="experience">
           <p className="kicker">04 / EXPERIENCE</p>
-
           <h2>
             Learning by <span>doing.</span>
           </h2>
@@ -622,7 +767,6 @@ export default function App() {
                 <span className="kicker">{role.date}</span>
                 <p>Puducherry, India</p>
               </div>
-
               <div>
                 <h3>{role.title}</h3>
                 <h4>{role.organization}</h4>
@@ -634,7 +778,6 @@ export default function App() {
 
         <section id="education">
           <p className="kicker">05 / EDUCATION</p>
-
           <h2>
             A foundation.
             <br />
@@ -654,7 +797,6 @@ export default function App() {
 
         <section id="certifications">
           <p className="kicker">06 / CERTIFICATIONS</p>
-
           <h2>
             Knowledge.
             <br />
@@ -694,7 +836,6 @@ export default function App() {
                     <span className="kicker">
                       {certificate.issuer} / {certificate.date}
                     </span>
-
                     <h3>{certificate.title}</h3>
                   </div>
 
@@ -730,7 +871,6 @@ export default function App() {
 
         <section id="contact">
           <p className="kicker">07 / CONNECT</p>
-
           <h2>
             Let’s connect
             <br />
@@ -754,7 +894,6 @@ export default function App() {
             >
               LinkedIn ↗
             </a>
-
             <a
               href={github}
               target="_blank"
@@ -762,7 +901,6 @@ export default function App() {
             >
               GitHub ↗
             </a>
-
             <a href={`mailto:${email}`}>Email ↗</a>
           </div>
         </section>
@@ -770,7 +908,6 @@ export default function App() {
 
       <footer>
         © 2026 Nabeel Ahmad Kamaludeen
-
         <a
           href="#home"
           onClick={(event) => {
