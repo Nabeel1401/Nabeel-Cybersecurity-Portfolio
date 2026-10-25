@@ -177,14 +177,16 @@ const education = [
     institution: 'Puducherry Technological University',
   },
   {
-    date: '2019 — 2021',
-    title: 'Higher Secondary Certificate — PCMC',
-    institution: 'Petit Seminaire Higher Secondary School',
+  date: '2019 — 2021',
+  title: 'Higher Secondary Certificate',
+  institution: 'Petit Seminaire Higher Secondary School',
+  location: 'Pondicherry, India',
   },
   {
     date: '2018 — 2019',
     title: 'Secondary School Leaving Certificate',
     institution: 'Petit Seminaire Higher Secondary School',
+    location: 'Pondicherry, India',
   },
 ];
 
@@ -790,6 +792,7 @@ export default function App() {
                 <span className="kicker">{item.date}</span>
                 <h3>{item.title}</h3>
                 <p>{item.institution}</p>
+                {'location' in item && <p>{item.location}</p>}
               </article>
             ))}
           </div>
