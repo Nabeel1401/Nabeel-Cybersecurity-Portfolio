@@ -111,7 +111,7 @@ const projects = [
     visual: 'wallet ↔ smart contract ↔ ethereum',
 
     // Paste the REDBLOX project link here later.
-    url: '',
+    url: 'https://github.com/Nabeel1401/Nft-App',
   },
   {
     title: 'Multimodal Fake News Detection',
@@ -127,7 +127,7 @@ const projects = [
     visual: 'text + images + graphs → classification',
 
     // Paste the AI project link here later.
-    url: '',
+    url: 'https://github.com/Nabeel1401/Multimodal-Fake-News-Detection',
   },
   {
     title: 'Rust TCP Port Scanner',
@@ -143,7 +143,7 @@ const projects = [
     visual: 'target → TCP scan → exposed services',
 
     // Paste the Rust project link here later.
-    url: '',
+    url: 'https://github.com/Nabeel1401/rust-port-scanner',
   },
 ];
 
